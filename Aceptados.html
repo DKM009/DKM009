@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidatos - Seleccionados y Rechazados</title>
+    <!-- Firebase App (los SDK de Firebase) -->
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+
+<script>
+    // Configuración de Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyDaHoSm8eAfEutqz6mawOU2Whr9e25i1LA",
+  authDomain: "cv-ai2.firebaseapp.com",
+  projectId: "cv-ai2",
+  storageBucket: "cv-ai2.appspot.com",
+  messagingSenderId: "89595327167",
+  appId: "1:89595327167:web:17b5bd81da760e8d6b4c0a",
+  measurementId: "G-N25W5K29D4"
+   };
+    
+
+    // Inicializar Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+</script>
+<script>
+    // Función para mostrar candidatos seleccionados y rechazados
+    function cargarCandidatos() {
+        const candidatosSeleccionados = document.querySelector('.candidates');
+        const candidatosRechazados = document.querySelector('.candidates.rejected');
+
+        // Obtener todos los candidatos de Firestore
+        db.collection("candidatos").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const candidateCard = `
+                    <div class="candidate-card">
+                        <h3>${data.nombre}</h3>
+                        <p>${data.puesto}</p>
+                        <a href="${data.cvUrl}" target="_blank">Ver CV</a>
+                    </div>
+                `;
+                if (data.estado === "seleccionado") {
+                    candidatosSeleccionados.innerHTML += candidateCard;
+                } else if (data.estado === "rechazado") {
+                    candidatosRechazados.innerHTML += candidateCard;
+                }
+            });
+        }).catch((error) => {
+            console.error("Error obteniendo los documentos: ", error);
+        });
+    }
+
+    // Llamar a la función cuando la página cargue
+    window.onload = cargarCandidatos;
+</script>
+
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        h2 {
+            color: #007BFF;
+            border-bottom: 2px solid #007BFF;
+            padding-bottom: 10px;
+        }
+        .candidates {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .candidate-card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        .candidate-card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .candidate-card p {
+            color: #555;
+            font-size: 0.9em;
+            margin: 10px 0;
+        }
+        .candidate-card a {
+            display: inline-block;
+            padding: 10px 20px;
+            color: #fff;
+            background-color: #28a745;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .candidate-card a:hover {
+            background-color: #218838;
+        }
+        .rejected a {
+            background-color: #dc3545;
+        }
+        .rejected a:hover {
+            background-color: #c82333;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Candidatos</h1>
+
+        <!-- Sección de candidatos seleccionados -->
+        <div class="section">
+            <h2>Candidatos Seleccionados</h2>
+            <div class="candidates">
+                <!-- Tarjeta de candidato seleccionado -->
+                <div class="candidate-card">
+                    <h3>Juan Pérez</h3>
+                    <p>Desarrollador Web</p>
+                    <a href="ruta/al/cv-juan.pdf" target="_blank">Ver CV</a>
+                </div>
+                <div class="candidate-card">
+                    <h3>María López</h3>
+                    <p>Diseñadora Gráfica</p>
+                    <a href="ruta/al/cv-maria.pdf" target="_blank">Ver CV</a>
+                </div>
+                <!-- Más candidatos pueden ser añadidos aquí -->
+            </div>
+        </div>
+
+        <!-- Sección de candidatos rechazados -->
+        <div class="section">
+            <h2>Candidatos Rechazados</h2>
+            <div class="candidates rejected">
+                <!-- Tarjeta de candidato rechazado -->
+                <div class="candidate-card">
+                    <h3>Carlos Fernández</h3>
+                    <p>Analista de Datos</p>
+                    <a href="ruta/al/cv-carlos.pdf" target="_blank">Ver CV</a>
+                </div>
+                <div class="candidate-card">
+                    <h3>Sofía González</h3>
+                    <p>Especialista en Marketing</p>
+                    <a href="ruta/al/cv-sofia.pdf" target="_blank">Ver CV</a>
+                </div>
+                <!-- Más candidatos pueden ser añadidos aquí -->
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Empresa de Selección. Todos los derechos reservados.</p>
+    </div>
+
+</body>
+</html>
